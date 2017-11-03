@@ -12,4 +12,7 @@ Drag n drop the `emotes` folder inside this repo to your `resources` folder in y
 
 ## Pictures
 
-(Maybe soon not rn I'm tired)
+![Emote Sit](https://i.imgur.com/VmHoVaF.jpg)
+![Emote Smoke](https://i.imgur.com/yMRta3X.jpg)
+![Emote Flex](https://i.imgur.com/gwScbie.jpg)
+![Emote Yoga](https://i.imgur.com/6cyc0Is.jpg)
