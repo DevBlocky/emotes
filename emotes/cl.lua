@@ -4,6 +4,7 @@ local emotes = {
     ['cop'] = "WORLD_HUMAN_COP_IDLES",
     ['lean'] = "WORLD_HUMAN_LEANING",
     ['sit'] = "WORLD_HUMAN_PICNIC",
+    ['stupor'] = "WORLD_HUMAN_STUPOR",
     ['sunbathe2'] = "WORLD_HUMAN_SUNBATHE_BACK",
     ['sunbathe'] = "WORLD_HUMAN_SUNBATHE",
     ['medic'] = "CODE_HUMAN_MEDIC_TEND_TO_DEAD",
@@ -11,10 +12,16 @@ local emotes = {
     ['party'] = "WORLD_HUMAN_PARTYING",
     ['kneel'] = "CODE_HUMAN_MEDIC_KNEEL",
     ['notepad'] = "CODE_HUMAN_MEDIC_TIME_OF_DEATH",
-    ['traffic'] = "WORLD_HUMAN_CAR_PARK_ATTENDANT",
-    ['photo'] = "WORLD_HUMAN_PAPARAZZI",
-    ['drink'] = "WORLD_HUMAN_DRINKING",
+    ['weed'] = "WORLD_HUMAN_SMOKING_POT",
+    ['impatient'] = "WORLD_HUMAN_STAND_IMPATIENT",
+    ['fish'] = "WORLD_HUMAN_STAND_FISHING",
+    ['weld'] = "WORLD_HUMAN_WELDING",
+    ['photography'] = "WORLD_HUMAN_PAPARAZZI",
+    ['film'] = "WORLD_HUMAN_MOBILE_FILM_SHOCKING",
+    ['cheer'] = "WORLD_HUMAN_CHEERING",
+    ['binoculars'] = "WORLD_HUMAN_BINOCULARS",
     ['flex'] = "WORLD_HUMAN_MUSCLE_FLEX",
+    ['weights'] = "WORLD_HUMAN_MUSCLE_FREE_WEIGHTS",
     ['yoga'] = "WORLD_HUMAN_YOGA"
 }
 
@@ -66,12 +73,12 @@ function displayEmotes()
 end
 function playEmote(emoteDic) -- Plays an emote from the given name dictionary
     if not DoesEntityExist(GetPlayerPed(-1)) then -- Return of the ped doesn't exist
-        return
+        return false
     end
 
     if IsPedInAnyVehicle(GetPlayerPed(-1)) then -- Returns if the player is in any vehicle
         drawNotification("~r~You must leave the vehicle first")
-        return
+        return false
     end
 
     local pedHoldingWeapon = IsPedArmed(GetPlayerPed(-1), 7)
@@ -82,12 +89,14 @@ function playEmote(emoteDic) -- Plays an emote from the given name dictionary
 
     TaskStartScenarioInPlace(GetPlayerPed(-1), emoteDic, 0, true) -- Start the scenario
     emotePlaying = true
+    return true
 end
 
 AddEventHandler("emote:invoke", function(name)
     if emotes[name] ~= nil then -- Checking if the name is in the dictionary
-        playEmote(emotes[name]) -- Playing the emote from the dictionary
-        drawNotification("Playing the emote \""..name.."\"")
+        if playEmote(emotes[name]) then -- Playing the emote from the dictionary
+            drawNotification("Playing the emote \""..name.."\"")
+        end
     else
         TriggerEvent("chatMessage", "ERROR", {255,0,0}, "Invalid emote name") -- Saying if the name wasn't in the dictionary
     end
