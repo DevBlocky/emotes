@@ -111,8 +111,8 @@ end)
 Citizen.CreateThread(function()
     while true do
 
-        if (IsControlJustReleased(0, 32) or IsControlJustReleased(0, 33) or IsControlJustReleased(0, 34) or IsControlJustReleased(0, 35)) then
-            if emotePlaying then
+        if emotePlaying then
+            if (IsControlPressed(0, 32) or IsControlPressed(0, 33) or IsControlPressed(0, 34) or IsControlPressed(0, 35)) then
                 cancelEmote() -- Cancels the emote if the player is moving
             end
         end
