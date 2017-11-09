@@ -16,3 +16,15 @@ Drag n drop the `emotes` folder inside this repo to your `resources` folder in y
 ![Emote Smoke](https://i.imgur.com/yMRta3X.jpg)
 ![Emote Flex](https://i.imgur.com/gwScbie.jpg)
 ![Emote Yoga](https://i.imgur.com/6cyc0Is.jpg)
+
+## Usage
+
+* Start the resource
+* Use commands `/emotes` and `/emote {name}`
+* That's literally all there is too it.
+
+## More emotes
+
+* See the format inside `cl.lua`
+* Added more emotes to the table
+* More emotes can be found HERE: https://pastebin.com/6mrYTdQv
