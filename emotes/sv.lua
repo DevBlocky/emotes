@@ -3,14 +3,17 @@ AddEventHandler('chatMessage', function(source, n, msg)
         
     if string.lower(args[1]) == "/emotes" then
         TriggerClientEvent("emote:display", source)
+        CancelEvent()
     elseif string.lower(args[1]) == "/emote" then
         if args[2] ~= nil then
             TriggerClientEvent("emote:invoke", source, args[2])
         else
             TriggerClientEvent("chatMessage", source, "ERROR", {255,0,0}, "^7Use \"^3/emotes^7\" to display all of the emotes")
         end
+        CancelEvent()
     elseif string.lower(args[1]) == "/cancelemote" then
         TriggerClientEvent("emote:cancelnow", source)
+        CancelEvent()
     end
 end)
 function stringsplit(inputstr, sep)
