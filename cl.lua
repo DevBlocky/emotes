@@ -71,7 +71,7 @@ function displayEmotes()
 	TriggerEvent("chatMessage", "EMOTES", {255,0,0}, "") -- Saying "EMOTES:" in red
 	TriggerEvent("chatMessage", "", {0,0,0}, display) -- Displaying the emotes in white
 end
-function playEmote(emoteDic) -- Plays an emote from the given name dictionary
+function playEmote(emoteName) -- Plays an emote from the given name dictionary
 	if not DoesEntityExist(GetPlayerPed(-1)) then -- Return of the ped doesn't exist
 		return false
 	end
@@ -81,13 +81,11 @@ function playEmote(emoteDic) -- Plays an emote from the given name dictionary
 		return false
 	end
 
-	local pedHoldingWeapon = IsPedArmed(GetPlayerPed(-1), 7)
-	if pedHoldingWeapon then -- If the player is holding weapon, remove it
-		SetCurrentPedWeapon(GetPlayerPed(-1), 0xA2719263, true)
-		drawNotification("Please put away your weapon first next time!")
+	if IsPedArmed(GetPlayerPed(-1), 7) then -- If the player is holding weapon, remove it
+		SetCurrentPedWeapon(GetPlayerPed(-1), GetHashKey('WEAPON_UNARMED'), true)
 	end
 
-	TaskStartScenarioInPlace(GetPlayerPed(-1), emoteDic, 0, true) -- Start the scenario
+	TaskStartScenarioInPlace(GetPlayerPed(-1), emoteName, 0, true) -- Start the scenario
 	emotePlaying = true
 	return true
 end
