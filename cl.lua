@@ -45,32 +45,6 @@ RegisterNetEvent("emote:display")
 
 local emotePlaying = IsPedActiveInScenario(GetPlayerPed(-1)) -- Registering whether or not the player is in an active scenario
 
-
-function cancelEmote() -- Cancels the emote slowly
-	ClearPedTasks(GetPlayerPed(-1))
-	emotePlaying = false
-end
-function cancelEmoteNow() -- Cancels the emote immediately
-	ClearPedTasksImmediately(GetPlayerPed(-1))
-	emotePlaying = false
-end
-
-function displayEmotes()
-	local index = 0 -- Current index
-	local display = "^7" -- Text to display
-
-	for name, value in pairs(emotes) do -- Adding the emote names to the display var
-		index = index + 1
-		if index == 1 then
-			display = display..name
-		else
-			display = display..", "..name
-		end
-	end
-
-	TriggerEvent("chatMessage", "EMOTES", {255,0,0}, "") -- Saying "EMOTES:" in red
-	TriggerEvent("chatMessage", "", {0,0,0}, display) -- Displaying the emotes in white
-end
 function playEmote(emoteName) -- Plays an emote from the given name dictionary
 	if not DoesEntityExist(GetPlayerPed(-1)) then -- Return of the ped doesn't exist
 		return false
@@ -90,31 +64,52 @@ function playEmote(emoteName) -- Plays an emote from the given name dictionary
 	return true
 end
 
-AddEventHandler("emote:invoke", function(name)
-	if emotes[name] ~= nil then -- Checking if the name is in the dictionary
-		if playEmote(emotes[name]) then -- Playing the emote from the dictionary
-			drawNotification("Playing the emote \""..name.."\"")
-		end
-	else
-		TriggerEvent("chatMessage", "ERROR", {255,0,0}, "Invalid emote name") -- Saying if the name wasn't in the dictionary
-	end
-end)
-AddEventHandler("emote:display", function()
-	displayEmotes() -- Displays all of the emotes
-end)
-AddEventHandler("emote:cancelnow", function()
-	cancelEmoteNow() -- Cancels the emote immediately
-end)
-
 Citizen.CreateThread(function()
 	while true do
 
 		if emotePlaying then
 			if (IsControlPressed(0, 32) or IsControlPressed(0, 33) or IsControlPressed(0, 34) or IsControlPressed(0, 35)) then
-				cancelEmote() -- Cancels the emote if the player is moving
+				-- Cancels the emote if the player is moving
+				ClearPedTasks(GetPlayerPed(-1))
+				emotePlaying = false
 			end
 		end
 
 		Citizen.Wait(0)
 	end
+end)
+
+RegisterCommand('emote', function(source, args, raw)
+	if #args > 0 then -- if supplied atleast 1 argument
+		local name = args[1]
+		if emotes[name] ~= nil then -- Checking if the name is in the dictionary
+			if playEmote(emotes[name]) then -- Playing the emote from the dictionary
+				drawNotification("Playing the emote \""..name.."\"")
+			end
+		else
+			TriggerEvent("chatMessage", "ERROR", {255,0,0}, "Invalid emote name") -- Saying if the name wasn't in the dictionary
+		end
+	else
+		TriggerEvent("chatMessage", "ERROR", {255,0,0}, "^7Use \"^3/emotes^7\" to display all of the emotes") -- showing a message to display emotes
+	end
+end)
+RegisterCommand('emotes', function(source, args, raw)
+	local index = 0 -- Current index
+	local display = "^7" -- Text to display
+
+	for name, value in pairs(emotes) do -- Adding the emote names to the display var
+		index = index + 1
+		if index == 1 then
+			display = display..name
+		else
+			display = display..", "..name
+		end
+	end
+
+	TriggerEvent("chatMessage", "EMOTES", {255,0,0}, "") -- Saying "EMOTES:" in red
+	TriggerEvent("chatMessage", "", {0,0,0}, display) -- Displaying the emotes in white
+end)
+RegisterCommand('cancelemote', function(source, args, raw)
+	ClearPedTasksImmediately(GetPlayerPed(-1))
+	emotePlaying = false
 end)
