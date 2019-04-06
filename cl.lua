@@ -24,6 +24,16 @@ local emotes = {
 	['weights'] = "WORLD_HUMAN_MUSCLE_FREE_WEIGHTS",
 	['yoga'] = "WORLD_HUMAN_YOGA"
 }
+-- this is an area for customizing messages
+local msgTemplates = {
+	['prefix'] = '<b><span style="color:rgb(255,0,0)">EMOTES</span>:</b> ',
+	['displayEmotes'] = '<br>{0}',
+	['playingEmote'] = 'Playing the emote ^3{0}^0',
+	['errorPrefix'] = '<b><span style="color:rgb(255,0,0)">ERROR</span>:</b> ',
+	['errorInVehicle'] = 'You must leave the vehicle first',
+	['errorInvalidName'] = 'Invalid emote name',
+	['errorDisplayEmotes'] = '^7Use \"^3/emotes^7\" to display all of the emotes',
+}
 
 --[[------------------------------------------------------------------------------------------------
 
@@ -31,17 +41,16 @@ local emotes = {
 
 ------------------------------------------------------------------------------------------------]]--
 
--- Draws a simple notification
-function drawNotification(text)
-	SetNotificationTextEntry("STRING")
-	AddTextComponentString(text)
-	DrawNotification(false, false)
+function message(templates, args)
+	local total = ''
+	for _, n in ipairs(templates) do
+		total = total..msgTemplates[n]
+	end
+	TriggerEvent('chat:addMessage', {
+		template = total,
+		args = args or {}
+	})
 end
-
--- Registering all of the events called by the server
-RegisterNetEvent("emote:invoke")
-RegisterNetEvent("emote:cancelnow")
-RegisterNetEvent("emote:display")
 
 local emotePlaying = IsPedActiveInScenario(GetPlayerPed(-1)) -- Registering whether or not the player is in an active scenario
 
@@ -51,7 +60,7 @@ function playEmote(emoteName) -- Plays an emote from the given name dictionary
 	end
 
 	if IsPedInAnyVehicle(GetPlayerPed(-1)) then -- Returns if the player is in any vehicle
-		drawNotification("~r~You must leave the vehicle first")
+		message({'errorPrefix', 'errorInVehicle'})
 		return false
 	end
 
@@ -84,13 +93,13 @@ RegisterCommand('emote', function(source, args, raw)
 		local name = args[1]
 		if emotes[name] ~= nil then -- Checking if the name is in the dictionary
 			if playEmote(emotes[name]) then -- Playing the emote from the dictionary
-				drawNotification("Playing the emote \""..name.."\"")
+				message({'prefix', 'playingEmote'}, {name})
 			end
 		else
-			TriggerEvent("chatMessage", "ERROR", {255,0,0}, "Invalid emote name") -- Saying if the name wasn't in the dictionary
+			message({'errorPrefix', 'errorInvalidName'}) -- Saying if the name wasn't in the dictionary
 		end
 	else
-		TriggerEvent("chatMessage", "ERROR", {255,0,0}, "^7Use \"^3/emotes^7\" to display all of the emotes") -- showing a message to display emotes
+		message({'errorPrefix', 'errorDisplayEmotes'}) -- showing a message to display emotes
 	end
 end)
 RegisterCommand('emotes', function(source, args, raw)
@@ -106,8 +115,7 @@ RegisterCommand('emotes', function(source, args, raw)
 		end
 	end
 
-	TriggerEvent("chatMessage", "EMOTES", {255,0,0}, "") -- Saying "EMOTES:" in red
-	TriggerEvent("chatMessage", "", {0,0,0}, display) -- Displaying the emotes in white
+	message({'prefix', 'displayEmotes'}, {display})
 end)
 RegisterCommand('cancelemote', function(source, args, raw)
 	ClearPedTasksImmediately(GetPlayerPed(-1))
