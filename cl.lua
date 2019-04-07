@@ -102,6 +102,9 @@ RegisterCommand('emote', function(source, args, raw)
 		message({'errorPrefix', 'errorDisplayEmotes'}) -- showing a message to display emotes
 	end
 end)
+TriggerEvent('chat:addSuggestion', '/emote', 'Plays an emote', {
+	{name = 'name', help = 'The emote name to play'}
+})
 RegisterCommand('emotes', function(source, args, raw)
 	local index = 0 -- Current index
 	local display = "^7" -- Text to display
@@ -117,7 +120,9 @@ RegisterCommand('emotes', function(source, args, raw)
 
 	message({'prefix', 'displayEmotes'}, {display})
 end)
+TriggerEvent('chat:addSuggestion', '/emotes', 'Displays possible emotes')
 RegisterCommand('cancelemote', function(source, args, raw)
 	ClearPedTasksImmediately(GetPlayerPed(-1))
 	emotePlaying = false
 end)
+TriggerEvent('chat:addSuggestion', '/cancelemote', 'Immediately cancels your current emote')
